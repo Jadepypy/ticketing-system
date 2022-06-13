@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+package timer_proto;
+
+option go_package = "./timer_proto";
+
+import "google/protobuf/timestamp.proto";
+
+service TimerService {
+  rpc SetTimer(SetTimerRequest) returns (SetTimerResponse) {};
+}
+
+message SetTimerRequest {
+  int64 event_id = 1;
+  google.protobuf.Timestamp deadline = 5;
+}
+
+message SetTimerResponse {
+}
+

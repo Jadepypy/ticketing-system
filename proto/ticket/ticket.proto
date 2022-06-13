@@ -1,0 +1,37 @@
+syntax = "proto3";
+
+package ticket_proto;
+
+option go_package = "./ticket_proto";
+
+service TicketService {
+  rpc GetTickets(GetTicketsRequest) returns (GetTicketsResponse) {};
+  rpc CreateTickets(CreateTicketsRequest) returns (CreateTicketsResponse) {};
+  rpc DeleteTickets(DeleteTicketsRequest) returns (DeleteTicketsResponse) {}
+}
+
+message Ticket {
+  int64 event_id = 1;
+}
+
+message GetTicketsRequest {
+  int64 user_id = 1;
+}
+
+message GetTicketsResponse {
+  repeated Ticket tickets = 1;
+}
+
+message CreateTicketsRequest {
+  int64 event_id = 1;
+  int64 ticket_count = 2;
+}
+
+message CreateTicketsResponse {}
+
+message DeleteTicketsRequest {
+  int64 user_id = 1;
+  repeated Ticket tickets = 2;
+}
+
+message DeleteTicketsResponse {}
