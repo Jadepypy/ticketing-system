@@ -3,7 +3,9 @@ package main
 import (
 	"context"
 	"fmt"
+	"github.com/Jadepypy/ticketing-system/cmd/event"
 	"github.com/Jadepypy/ticketing-system/cmd/timer"
+	event_proto "github.com/Jadepypy/ticketing-system/proto/event"
 	timer_proto "github.com/Jadepypy/ticketing-system/proto/timer"
 
 	"google.golang.org/grpc"
@@ -35,16 +37,20 @@ func main() {
 	}
 
 	// STEP 2-2：使用 gRPC 的 NewServer 方法來建立 gRPC Server 的實例
-	service := timer.NewService()
-	timerSrv := timer.MakeGRPCServer(ctx, service)
-	grpcSrv := grpc.NewServer()
+	timerService := timer.NewService()
+	timerServer := timer.MakeGRPCServer(ctx, timerService)
+
+	eventService := event.NewService()
+	eventServer := event.MakeGRPCServer(ctx, eventService)
+	grpcServer := grpc.NewServer()
 
 	// STEP 2-3：在 gRPC Server 中註冊 service 的實作
 	// 使用 proto 提供的 RegisterTimerServiceServer 方法，並將 timerServer 作為參數傳入
-	timer_proto.RegisterTimerServiceServer(grpcSrv, timerSrv)
+	timer_proto.RegisterTimerServiceServer(grpcServer, timerServer)
+	event_proto.RegisterEventServiceServer(grpcServer, eventServer)
 
 	// STEP 2-4：啟動 grpcServer，並阻塞在這裡直到該程序被 kill 或 stop
-	err = grpcSrv.Serve(lis)
+	err = grpcServer.Serve(lis)
 	if err != nil {
 		log.Fatalf("failed to serve: %v", err)
 	}
